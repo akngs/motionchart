@@ -394,7 +394,14 @@ var motionchart = (function (d3) {
               .attr("class", "datapoint")
               .attr("transform", function (d) { return "translate(" + _this.x.scaled(d) + ", " + _this.y.scaled(d) + ")"; })
               .style("opacity", 0)
-              .html("\n        <circle\n            r=\"0\" stroke=\"#000\" stroke-width=\"0.5\" style=\"shape-rendering: geometricPrecision\"\n        />\n      ")
+              .each(function () {
+              d3.select(this)
+                  .append("circle")
+                  .attr("r", 0)
+                  .attr("stroke", "#000")
+                  .attr("stroke-width", 0.5)
+                  .style("shape-rendering", "geometricPrecision");
+          })
               .merge(dpUpdate);
           if (animate)
               dpMerged = dpMerged.transition();
@@ -422,10 +429,26 @@ var motionchart = (function (d3) {
           var size = CFG.BOXPLOT_SIZE;
           var pad = CFG.BOXPLOT_PADDING;
           if (root.html() === "") {
-              var clipId = "boxplot-clip-" + (isx ? "x" : "y");
+              var clipId_1 = "boxplot-clip-" + (isx ? "x" : "y");
               root.append("g")
                   .attr("class", "plot")
-                  .html("\n          <clipPath id=\"" + clipId + "\"><rect /></clipPath>\n          <path class=\"whisker\" stroke-width=\"0.5\" clip-path=\"url(#" + clipId + ")\" />\n          <rect class=\"box\" stroke-width=\"0.5\" clip-path=\"url(#" + clipId + ")\" />\n          <line class=\"median\" stroke-width=\"0.5\" clip-path=\"url(#" + clipId + ")\" />\n        ");
+                  .each(function () {
+                  var thisSel = d3.select(this);
+                  thisSel.append("clipPath")
+                      .attr("id", clipId_1).append("rect");
+                  thisSel.append("path")
+                      .attr("class", "whisker")
+                      .attr("stroke-width", 0.5)
+                      .attr("clip-path", "url(#" + clipId_1 + ")");
+                  thisSel.append("rect")
+                      .attr("class", "box")
+                      .attr("stroke-width", 0.5)
+                      .attr("clip-path", "url(#" + clipId_1 + ")");
+                  thisSel.append("line")
+                      .attr("class", "median")
+                      .attr("stroke-width", 0.5)
+                      .attr("clip-path", "url(#" + clipId_1 + ")");
+              });
               root.append("g")
                   .attr("class", "data")
                   .attr("transform", isx ? "translate(0, " + size * .5 + ")" : "translate(" + size * .5 + ", 0)");

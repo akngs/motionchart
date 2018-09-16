@@ -457,11 +457,14 @@ export class Chart<D extends IDatum> {
         d => `translate(${this.x.scaled(d)}, ${this.y.scaled(d)})`,
       )
       .style("opacity", 0)
-      .html(`
-        <circle
-            r="0" stroke="#000" stroke-width="0.5" style="shape-rendering: geometricPrecision"
-        />
-      `)
+      .each(function() {
+        d3.select(this)
+          .append("circle")
+          .attr("r", 0)
+          .attr("stroke", "#000")
+          .attr("stroke-width", 0.5)
+          .style("shape-rendering", "geometricPrecision")
+      })
       .merge(dpUpdate)
 
     if (animate) dpMerged = dpMerged.transition()
@@ -500,12 +503,23 @@ export class Chart<D extends IDatum> {
       const clipId = `boxplot-clip-${isx ? "x" : "y"}`
       root.append("g")
         .attr("class", "plot")
-        .html(`
-          <clipPath id="${clipId}"><rect /></clipPath>
-          <path class="whisker" stroke-width="0.5" clip-path="url(#${clipId})" />
-          <rect class="box" stroke-width="0.5" clip-path="url(#${clipId})" />
-          <line class="median" stroke-width="0.5" clip-path="url(#${clipId})" />
-        `)
+        .each(function() {
+          const thisSel = d3.select(this)
+          thisSel.append("clipPath")
+            .attr("id", clipId).append("rect")
+          thisSel.append("path")
+            .attr("class", "whisker")
+            .attr("stroke-width", 0.5)
+            .attr("clip-path", `url(#${clipId})`)
+          thisSel.append("rect")
+            .attr("class", "box")
+            .attr("stroke-width", 0.5)
+            .attr("clip-path", `url(#${clipId})`)
+          thisSel.append("line")
+            .attr("class", "median")
+            .attr("stroke-width", 0.5)
+            .attr("clip-path", `url(#${clipId})`)
+        })
       root.append("g")
         .attr("class", "data")
         .attr("transform", isx ? `translate(0, ${size * .5})` : `translate(${size * .5}, 0)`)
