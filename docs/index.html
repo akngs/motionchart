@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Motionchart</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            width: 100%;
+            max-width: 48rem;
+            margin: 0 auto;
+            padding: 0.5rem;
+            overflow: hidden;
+            font-family: sans-serif;
+            color: #444;
+        }
+
+        #chart {
+            width: 100%;
+            height: 340px;
+            padding: 0.5rem;
+            margin: 2rem 0;
+            border: 1px solid #EEE;
+        }
+
+        #controls {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        label {
+            display: inline-block;
+            font-variant: small-caps;
+            width: 4rem;
+        }
+
+        #t {
+            width: 100%;
+        }
+
+        p {
+            line-height: 1.4;
+        }
+    </style>
+
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-52FMCWR');</script>
+    <!-- End Google Tag Manager -->
+
+    <script src="//d3js.org/d3.v5.min.js"></script>
+    <script src="motionchart.js"></script>
+    <script>
+        var data, chart;
+
+        window.addEventListener("DOMContentLoaded", function () {
+            data = new motionchart.DataTable(
+                [
+                    {name: "key", label: "fruit", type: "string"},
+                    {name: "date", label: "date", type: "number"},
+                    {name: "sales", label: "sales ($)", type: "number"},
+                    {name: "expenses", label: "expenses ($)", type: "number"},
+                    {name: "qty", label: "quantity", type: "number"},
+                ],
+                [
+                    {key: 'A', date: 1000, sales: 1000, expenses: 100, qty: 10},
+                    {key: 'B', date: 1000, sales: 12000, expenses: 200, qty: 15},
+                    {key: 'C', date: 1000, sales: 53000, expenses: 300, qty: 30},
+                    {key: 'D', date: 1000, sales: 35000, expenses: 150, qty: 17},
+                    {key: 'E', date: 1000, sales: 5100, expenses: 650, qty: 22},
+                    {key: 'A', date: 2000, sales: 91500, expenses: 500, qty: 15},
+                    {key: 'B', date: 2000, sales: 151600, expenses: 180, qty: 20},
+                    {key: 'C', date: 2000, sales: 201400, expenses: 200, qty: 10},
+                    {key: 'D', date: 2000, sales: 22400, expenses: 220, qty: 25},
+                    {key: 'E', date: 2000, sales: 67700, expenses: 760, qty: 65},
+                ]
+            );
+            chart = new motionchart.Chart(
+                data,
+                document.querySelector('#chart'),
+                {
+                    xBoxPlot: true,
+                    yBoxPlot: true,
+                },
+            );
+
+            chart.setC("key", "categorical");
+            chart.setX("sales", "linear");
+            chart.setY("expenses", "linear");
+            chart.setR("qty", "linear");
+            chart.animateUpdate = false;
+        });
+    </script>
+</head>
+
+<body>
+<h1>Motion chart</h1>
+<ul id="controls">
+    <li>
+        <label for="c">color</label>
+        <select id="c" onchange="chart.setC(this.value, this.selectedOptions[0].dataset.scale);">
+            <option data-scale="categorical" value="key" selected>Key</option>
+            <option data-scale="sequential" value="sales">Sales</option>
+            <option data-scale="sequential" value="expenses">Expenses</option>
+            <option data-scale="sequential" value="qty">Quantity</option>
+        </select>
+    </li>
+    <li>
+        <label for="x">x</label>
+        <select id="x" onchange="chart.setX(this.value, this.selectedOptions[0].dataset.scale);">
+            <option data-scale="linear" value="sales" selected>Sales</option>
+            <option data-scale="linear" value="expenses">Expenses</option>
+            <option data-scale="linear" value="qty">Quantity</option>
+        </select>
+    </li>
+    <li>
+        <label for="y">y</label>
+        <select id="y" onchange="chart.setY(this.value, this.selectedOptions[0].dataset.scale);">
+            <option data-scale="linear" value="sale">Sales</option>
+            <option data-scale="linear" value="expenses" selected>Expenses</option>
+            <option data-scale="linear" value="qty">Quantity</option>
+        </select>
+    </li>
+    <li>
+        <label for="r">radius</label>
+        <select id="r" onchange="chart.setR(this.value, this.selectedOptions[0].dataset.scale);">
+            <option data-scale="linear" value="sales">Sales</option>
+            <option data-scale="linear" value="expenses">Expenses</option>
+            <option data-scale="linear" value="qty" selected>Quantity</option>
+        </select>
+    </li>
+    <li>
+        <label for="t">time</label>
+        <input
+            onchange="chart.setProgress(+this.value, true);"
+            type="range" id="t" min="0" max="1" step="0.01" value="0"
+        >
+    </li>
+</ul>
+
+<div id="chart"></div>
+
+<p>
+    A simple motion chart using
+    <a href="https://typescriptlang.org">typescript v3</a> and
+    <a href="https://d3js.org">d3js v5</a>.
+</p>
+
+<p>
+    There's still things to be done, but the code is available at
+    <a href="https://github.com/akngs/motionchart">GitHub</a>.
+</p>
+
+</body>
+</html>

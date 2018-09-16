@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Motionchart</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0.5em;
+            overflow: hidden;
+        }
+
+        #chart {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="//d3js.org/d3.v5.min.js"></script>
+    <script src="lib/motionchart.js"></script>
+    <script>
+        var data, chart;
+
+        window.addEventListener("DOMContentLoaded", function () {
+            data = new motionchart.DataTable(
+                [
+                    {name: "key", label: "fruit", type: "string"},
+                    {name: "date", label: "date", type: "number"},
+                    {name: "sales", label: "sales ($)", type: "number"},
+                    {name: "expenses", label: "expenses ($)", type: "number"},
+                    {name: "qty", label: "quantity", type: "number"},
+                ],
+                [
+                    {key: 'A', date: 1000, sales: 1000, expenses: 100, qty: 10},
+                    {key: 'B', date: 1000, sales: 12000, expenses: 200, qty: 15},
+                    {key: 'C', date: 1000, sales: 53000, expenses: 300, qty: 30},
+                    {key: 'D', date: 1000, sales: 35000, expenses: 150, qty: 17},
+                    {key: 'E', date: 1000, sales: 5100, expenses: 650, qty: 22},
+                    {key: 'A', date: 2000, sales: 91500, expenses: 500, qty: 15},
+                    {key: 'B', date: 2000, sales: 151600, expenses: 180, qty: 20},
+                    {key: 'C', date: 2000, sales: 201400, expenses: 200, qty: 10},
+                    {key: 'D', date: 2000, sales: 22400, expenses: 220, qty: 25},
+                    {key: 'E', date: 2000, sales: 67700, expenses: 760, qty: 65},
+                ]
+            );
+            chart = new motionchart.Chart(
+                data,
+                document.querySelector('#chart'),
+                {
+                    xBoxPlot: true,
+                    yBoxPlot: true,
+                },
+            );
+            update();
+        });
+
+        var lastUpdate = Date.now();
+        function update() {
+            requestAnimationFrame(update);
+            var now = Date.now();
+            if(now - lastUpdate < 2000) return;
+
+            lastUpdate = now;
+            chart.setX(
+                ["sales", "qty", "expenses"][(Math.random() * 3)|0],
+                ["linear", "constant"][(Math.random() * 2)|0],
+            );
+            chart.setY(
+                ["sales", "qty", "expenses"][(Math.random() * 3)|0],
+                ["linear", "constant"][(Math.random() * 2)|0],
+            );
+            chart.setR(
+                ["sales", "qty", "expenses"][(Math.random() * 3)|0],
+                ["linear", "constant"][(Math.random() * 2)|0],
+            );
+            // chart.setC(
+            //     ["sales", "qty", "expenses"][(Math.random() * 3)|0],
+            //     ["sequential", "constant"][(Math.random() * 2)|0],
+            // );
+            chart.setC("key", "categorical");
+            chart.setProgress(Math.random(), true);
+        }
+    </script>
+</head>
+
+<body>
+<div id="chart"></div>
+</body>
+</html>

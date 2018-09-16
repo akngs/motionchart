@@ -1,0 +1,9 @@
+# JS
+node_modules/
+lib/
+
+# IDEs
+.idea/
+
+# OS
+.DS_Store

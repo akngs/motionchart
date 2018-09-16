@@ -1,0 +1,61 @@
+{
+  "name": "motionchart",
+  "description": "Motion chart done right",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": "https://github.com/akngs/motionchart",
+  "main": "lib/motionchart.cjs.js",
+  "types": "lib/motionchart.d.ts",
+  "module": "lib/motionchart.esm.js",
+  "browser": "lib/motionchart.js",
+  "unpkg": "lib/motionchart.js",
+  "files": [
+    "lib"
+  ],
+  "keywords": [
+    "chart",
+    "d3",
+    "eda",
+    "graph",
+    "motion",
+    "motionchart",
+    "plot",
+    "visualization"
+  ],
+  "dependencies": {
+    "d3": "^5.7.0"
+  },
+  "devDependencies": {
+    "@types/d3": "^5.0.0",
+    "@types/jest": "^23.3.2",
+    "concurrently": "^4.0.1",
+    "jest": "^23.6.0",
+    "rollup": "^0.65.2",
+    "rollup-plugin-typescript3": "^1.1.1",
+    "ts-jest": "^23.1.4",
+    "tslint": "^5.11.0",
+    "typescript": "^3.0.3"
+  },
+  "scripts": {
+    "dev": "concurrently -n build,test \"npm run build -- --watch\" \"npm run test -- --watch\"",
+    "build": "rollup -c",
+    "lint": "tslint --project .",
+    "test": "jest",
+    "types": "tsc --emitDeclarationOnly --declaration src/index.ts && mv src/index.d.ts lib/motionchart.d.ts",
+    "prepublishOnly": "npm run lint && npm run test && npm run build && npm run types"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  }
+}
