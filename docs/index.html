@@ -105,7 +105,7 @@
 <ul id="controls">
     <li>
         <label for="c">color</label>
-        <select id="c" onchange="chart.setC(this.value, this.selectedOptions[0].dataset.scale);">
+        <select id="c" onchange="chart.setC(this.value, this.options[this.options.selectedIndex].dataset.scale);">
             <option data-scale="categorical" value="key" selected>Key</option>
             <option data-scale="sequential" value="sales">Sales</option>
             <option data-scale="sequential" value="expenses">Expenses</option>
@@ -114,7 +114,7 @@
     </li>
     <li>
         <label for="x">x</label>
-        <select id="x" onchange="chart.setX(this.value, this.selectedOptions[0].dataset.scale);">
+        <select id="x" onchange="chart.setX(this.value, this.options[this.options.selectedIndex].dataset.scale);">
             <option data-scale="linear" value="sales" selected>Sales</option>
             <option data-scale="linear" value="expenses">Expenses</option>
             <option data-scale="linear" value="qty">Quantity</option>
@@ -122,7 +122,7 @@
     </li>
     <li>
         <label for="y">y</label>
-        <select id="y" onchange="chart.setY(this.value, this.selectedOptions[0].dataset.scale);">
+        <select id="y" onchange="chart.setY(this.value, this.options[this.options.selectedIndex].dataset.scale);">
             <option data-scale="linear" value="sales">Sales</option>
             <option data-scale="linear" value="expenses" selected>Expenses</option>
             <option data-scale="linear" value="qty">Quantity</option>
@@ -130,7 +130,7 @@
     </li>
     <li>
         <label for="r">radius</label>
-        <select id="r" onchange="chart.setR(this.value, this.selectedOptions[0].dataset.scale);">
+        <select id="r" onchange="chart.setR(this.value, this.options[this.options.selectedIndex].dataset.scale);">
             <option data-scale="linear" value="sales">Sales</option>
             <option data-scale="linear" value="expenses">Expenses</option>
             <option data-scale="linear" value="qty" selected>Quantity</option>
