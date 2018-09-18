@@ -63,11 +63,11 @@ var motionchart = (function (d3) {
       BOXPLOT_SIZE: 20,
       BOXPLOT_PADDING: 4,
       BOXPLOT_POINT_FILL_COLOR: "#000000",
-      BOXPLOT_STROKE_COLOR: "#999999",
+      BOXPLOT_STROKE_COLOR: "#666666",
       BOXPLOT_DOT_OPACITY: 0.3,
-      BOXPLOT_OUTLIER_OPACITY: 0.8,
-      BOXPLOT_DOT_R: 3,
-      BOXPLOT_OUTLIER_R: 4,
+      BOXPLOT_OUTLIER_OPACITY: 0.6,
+      BOXPLOT_DOT_R: 2,
+      BOXPLOT_OUTLIER_R: 2,
       // Margin
       MARGIN_T: 0,
       MARGIN_L: 0,
@@ -177,6 +177,7 @@ var motionchart = (function (d3) {
           var validMappings = [
               ["x", "linear", "number", function () { return d3.scaleLinear(); }],
               ["y", "linear", "number", function () { return d3.scaleLinear(); }],
+              ["r", "linear", "number", function () { return d3.scaleLinear(); }],
               ["r", "sqrt", "number", function () { return d3.scaleSqrt(); }],
               ["c", "sequential", "number", function () { return d3.scaleSequential(d3.interpolateViridis); }],
               ["c", "categorical", "string", function () { return d3.scaleOrdinal(d3.schemePaired); }],
@@ -409,9 +410,7 @@ var motionchart = (function (d3) {
               .attr("transform", function (d) { return "translate(" + _this.x.scaled(d) + ", " + _this.y.scaled(d) + ")"; })
               .style("opacity", CFG.DATA_CIRCLE_OPACITY)
               .select("circle")
-              .attr("r", function (d) {
-                return _this.r.scaled(d);
-              })
+              .attr("r", function (d) { return _this.r.scaled(d); })
               .attr("fill", function (d) { return _this.c.scaled(d); });
           if (this.shouldDrawXBoxPlot())
               this.renderBoxplot(data, this.x, root.select(".boxplot-x"), true, animate);

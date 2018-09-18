@@ -64,7 +64,58 @@
 
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="motionchart.js"></script>
-    <script src="index.js"></script>
+    <script>
+        var dataTable, chart;
+
+        window.addEventListener("DOMContentLoaded", function () {
+            d3.csv(
+                "ggi2016.csv",
+                function (raw) {
+                    raw["year"] = new Date(+raw["year"], 0, 1).getTime();
+                    raw["overall"] = Math.max(+raw["overall"], 0) || 0;
+                    raw["economic"] = Math.max(+raw["economic"], 0) || 0;
+                    raw["education"] = Math.max(+raw["education"], 0) || 0;
+                    raw["health"] = Math.max(+raw["health"], 0) || 0;
+                    raw["political"] = Math.max(+raw["political"], 0) || 0;
+                    return raw;
+                }
+            ).then(function (data) {
+                onLoad(data);
+            });
+        });
+
+        function onLoad(data) {
+            dataTable = new motionchart.DataTable(
+                [
+                    // key
+                    {name: "country", label: "country", type: "string"},
+                    // time
+                    {name: "year", label: "year", type: "number"},
+                    // rest data
+                    {name: "overall", label: "overall", type: "number"},
+                    {name: "economic", label: "economic", type: "number"},
+                    {name: "education", label: "education", type: "number"},
+                    {name: "health", label: "health", type: "number"},
+                    {name: "political", label: "political", type: "number"}
+                ],
+                data
+            );
+            chart = new motionchart.Chart(
+                dataTable,
+                document.querySelector('#chart'),
+                {
+                    xBoxPlot: true,
+                    yBoxPlot: true,
+                }
+            );
+
+            chart.setC("health", "sequential");
+            chart.setX("economic", "linear");
+            chart.setY("political", "linear");
+            chart.setR("overall", "sqrt");
+            chart.animateUpdate = false;
+        }
+    </script>
 </head>
 
 <body>
@@ -73,11 +124,11 @@
     <li>
         <label for="c">color</label>
         <select id="c" onchange="chart.setC(this.value, this.options[this.options.selectedIndex].dataset.scale);">
-            <option data-scale="categorical" value="country" selected>Country</option>
+            <option data-scale="categorical" value="country">Country</option>
             <option data-scale="sequential" value="overall">Overall</option>
             <option data-scale="sequential" value="economic">Economic</option>
             <option data-scale="sequential" value="education">Education</option>
-            <option data-scale="sequential" value="health">Health</option>
+            <option data-scale="sequential" value="health" selected>Health</option>
             <option data-scale="sequential" value="political">Political</option>
         </select>
     </li>

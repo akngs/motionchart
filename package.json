@@ -38,7 +38,7 @@
   },
   "scripts": {
     "dev": "concurrently -n build,test \"npm run build -- --watch\" \"npm run test -- --watch\"",
-    "build": "rollup -c",
+    "build": "rollup -c && cp lib/motionchart.js docs/",
     "lint": "tslint --project .",
     "test": "jest",
     "types": "tsc --emitDeclarationOnly --declaration src/index.ts && mv src/*.d.ts lib/",
