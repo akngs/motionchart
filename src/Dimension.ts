@@ -1,4 +1,3 @@
-import * as d3 from "d3"
 import {IDatum} from "./DataTable"
 
 type num = number
