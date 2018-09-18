@@ -32,6 +32,11 @@
             padding: 0;
         }
 
+        #controls li {
+            line-height: 1.5rem;
+            height: 1.5rem;
+        }
+
         label {
             display: inline-block;
             font-variant: small-caps;
@@ -39,7 +44,9 @@
         }
 
         #t {
-            width: 100%;
+            width: calc(100% - 5rem);
+            margin: 0;
+            vertical-align: middle;
         }
 
         p {
@@ -55,49 +62,9 @@
     })(window,document,'script','dataLayer','GTM-52FMCWR');</script>
     <!-- End Google Tag Manager -->
 
-    <script src="//d3js.org/d3.v5.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="motionchart.js"></script>
-    <script>
-        var data, chart;
-
-        window.addEventListener("DOMContentLoaded", function () {
-            data = new motionchart.DataTable(
-                [
-                    {name: "key", label: "fruit", type: "string"},
-                    {name: "date", label: "date", type: "number"},
-                    {name: "sales", label: "sales ($)", type: "number"},
-                    {name: "expenses", label: "expenses ($)", type: "number"},
-                    {name: "qty", label: "quantity", type: "number"},
-                ],
-                [
-                    {key: 'A', date: 1000, sales: 1000, expenses: 100, qty: 10},
-                    {key: 'B', date: 1000, sales: 12000, expenses: 200, qty: 15},
-                    {key: 'C', date: 1000, sales: 53000, expenses: 300, qty: 30},
-                    {key: 'D', date: 1000, sales: 35000, expenses: 150, qty: 17},
-                    {key: 'E', date: 1000, sales: 5100, expenses: 650, qty: 22},
-                    {key: 'A', date: 2000, sales: 91500, expenses: 500, qty: 15},
-                    {key: 'B', date: 2000, sales: 151600, expenses: 180, qty: 20},
-                    {key: 'C', date: 2000, sales: 201400, expenses: 200, qty: 10},
-                    {key: 'D', date: 2000, sales: 22400, expenses: 220, qty: 25},
-                    {key: 'E', date: 2000, sales: 67700, expenses: 760, qty: 65},
-                ]
-            );
-            chart = new motionchart.Chart(
-                data,
-                document.querySelector('#chart'),
-                {
-                    xBoxPlot: true,
-                    yBoxPlot: true,
-                }
-            );
-
-            chart.setC("key", "categorical");
-            chart.setX("sales", "linear");
-            chart.setY("expenses", "linear");
-            chart.setR("qty", "linear");
-            chart.animateUpdate = false;
-        });
-    </script>
+    <script src="index.js"></script>
 </head>
 
 <body>
@@ -106,34 +73,42 @@
     <li>
         <label for="c">color</label>
         <select id="c" onchange="chart.setC(this.value, this.options[this.options.selectedIndex].dataset.scale);">
-            <option data-scale="categorical" value="key" selected>Key</option>
-            <option data-scale="sequential" value="sales">Sales</option>
-            <option data-scale="sequential" value="expenses">Expenses</option>
-            <option data-scale="sequential" value="qty">Quantity</option>
+            <option data-scale="categorical" value="country" selected>Country</option>
+            <option data-scale="sequential" value="overall">Overall</option>
+            <option data-scale="sequential" value="economic">Economic</option>
+            <option data-scale="sequential" value="education">Education</option>
+            <option data-scale="sequential" value="health">Health</option>
+            <option data-scale="sequential" value="political">Political</option>
         </select>
     </li>
     <li>
         <label for="x">x</label>
         <select id="x" onchange="chart.setX(this.value, this.options[this.options.selectedIndex].dataset.scale);">
-            <option data-scale="linear" value="sales" selected>Sales</option>
-            <option data-scale="linear" value="expenses">Expenses</option>
-            <option data-scale="linear" value="qty">Quantity</option>
+            <option data-scale="linear" value="overall">Overall</option>
+            <option data-scale="linear" value="economic" selected>Economic</option>
+            <option data-scale="linear" value="education">Education</option>
+            <option data-scale="linear" value="health">Health</option>
+            <option data-scale="linear" value="political">Political</option>
         </select>
     </li>
     <li>
         <label for="y">y</label>
         <select id="y" onchange="chart.setY(this.value, this.options[this.options.selectedIndex].dataset.scale);">
-            <option data-scale="linear" value="sales">Sales</option>
-            <option data-scale="linear" value="expenses" selected>Expenses</option>
-            <option data-scale="linear" value="qty">Quantity</option>
+            <option data-scale="linear" value="overall">Overall</option>
+            <option data-scale="linear" value="economic">Economic</option>
+            <option data-scale="linear" value="education">Education</option>
+            <option data-scale="linear" value="health">Health</option>
+            <option data-scale="linear" value="political" selected>Political</option>
         </select>
     </li>
     <li>
         <label for="r">radius</label>
         <select id="r" onchange="chart.setR(this.value, this.options[this.options.selectedIndex].dataset.scale);">
-            <option data-scale="linear" value="sales">Sales</option>
-            <option data-scale="linear" value="expenses">Expenses</option>
-            <option data-scale="linear" value="qty" selected>Quantity</option>
+            <option data-scale="sqrt" value="overall" selected>Overall</option>
+            <option data-scale="sqrt" value="economic">Economic</option>
+            <option data-scale="sqrt" value="education">Education</option>
+            <option data-scale="sqrt" value="health">Health</option>
+            <option data-scale="sqrt" value="political">Political</option>
         </select>
     </li>
     <li>

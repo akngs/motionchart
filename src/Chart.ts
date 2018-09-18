@@ -206,6 +206,7 @@ export class Chart<D extends IDatum> {
       ["x", "linear", "number", () => d3.scaleLinear<D>()],
       ["y", "linear", "number", () => d3.scaleLinear<D>()],
       ["r", "linear", "number", () => d3.scaleLinear<D>()],
+      ["r", "sqrt", "number", () => d3.scaleSqrt<D>()],
       ["c", "sequential", "number", () => d3.scaleSequential(d3.interpolateViridis)],
       ["c", "categorical", "string", () => d3.scaleOrdinal(d3.schemePaired)],
     ]

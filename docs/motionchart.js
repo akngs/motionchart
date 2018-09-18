@@ -177,7 +177,7 @@ var motionchart = (function (d3) {
           var validMappings = [
               ["x", "linear", "number", function () { return d3.scaleLinear(); }],
               ["y", "linear", "number", function () { return d3.scaleLinear(); }],
-              ["r", "linear", "number", function () { return d3.scaleLinear(); }],
+              ["r", "sqrt", "number", function () { return d3.scaleSqrt(); }],
               ["c", "sequential", "number", function () { return d3.scaleSequential(d3.interpolateViridis); }],
               ["c", "categorical", "string", function () { return d3.scaleOrdinal(d3.schemePaired); }],
           ];
@@ -409,7 +409,9 @@ var motionchart = (function (d3) {
               .attr("transform", function (d) { return "translate(" + _this.x.scaled(d) + ", " + _this.y.scaled(d) + ")"; })
               .style("opacity", CFG.DATA_CIRCLE_OPACITY)
               .select("circle")
-              .attr("r", function (d) { return _this.r.scaled(d); })
+              .attr("r", function (d) {
+                return _this.r.scaled(d);
+              })
               .attr("fill", function (d) { return _this.c.scaled(d); });
           if (this.shouldDrawXBoxPlot())
               this.renderBoxplot(data, this.x, root.select(".boxplot-x"), true, animate);
