@@ -37,7 +37,7 @@
     "typescript": "^3.0.3"
   },
   "scripts": {
-    "dev": "concurrently -n build,test \"npm run build -- --watch\" \"npm run test -- --watch\"",
+    "dev": "concurrently -n build,test \"rollup -c --watch\" \"jest --watch\"",
     "build": "rollup -c && cp lib/motionchart.js docs/",
     "lint": "tslint --project .",
     "test": "jest",

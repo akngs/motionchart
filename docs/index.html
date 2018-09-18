@@ -123,43 +123,47 @@
 <ul id="controls">
     <li>
         <label for="c">color</label>
-        <select id="c" onchange="chart.setC(this.value, this.options[this.options.selectedIndex].dataset.scale);">
+        <select id="c" onchange="!this.value ? chart.unsetC() : chart.setC(this.value, this.options[this.options.selectedIndex].dataset.scale);">
             <option data-scale="categorical" value="country">Country</option>
             <option data-scale="sequential" value="overall">Overall</option>
             <option data-scale="sequential" value="economic">Economic</option>
             <option data-scale="sequential" value="education">Education</option>
             <option data-scale="sequential" value="health" selected>Health</option>
             <option data-scale="sequential" value="political">Political</option>
+            <option data-scale="" value="">Unset</option>
         </select>
     </li>
     <li>
         <label for="x">x</label>
-        <select id="x" onchange="chart.setX(this.value, this.options[this.options.selectedIndex].dataset.scale);">
+        <select id="x" onchange="!this.value ? chart.unsetX() : chart.setX(this.value, this.options[this.options.selectedIndex].dataset.scale);">
             <option data-scale="linear" value="overall">Overall</option>
             <option data-scale="linear" value="economic" selected>Economic</option>
             <option data-scale="linear" value="education">Education</option>
             <option data-scale="linear" value="health">Health</option>
             <option data-scale="linear" value="political">Political</option>
+            <option data-scale="" value="">Unset</option>
         </select>
     </li>
     <li>
         <label for="y">y</label>
-        <select id="y" onchange="chart.setY(this.value, this.options[this.options.selectedIndex].dataset.scale);">
+        <select id="y" onchange="!this.value ? chart.unsetY() : chart.setY(this.value, this.options[this.options.selectedIndex].dataset.scale);">
             <option data-scale="linear" value="overall">Overall</option>
             <option data-scale="linear" value="economic">Economic</option>
             <option data-scale="linear" value="education">Education</option>
             <option data-scale="linear" value="health">Health</option>
             <option data-scale="linear" value="political" selected>Political</option>
+            <option data-scale="" value="">Unset</option>
         </select>
     </li>
     <li>
         <label for="r">radius</label>
-        <select id="r" onchange="chart.setR(this.value, this.options[this.options.selectedIndex].dataset.scale);">
+        <select id="r" onchange="!this.value ? chart.unsetR() : chart.setR(this.value, this.options[this.options.selectedIndex].dataset.scale);">
             <option data-scale="sqrt" value="overall" selected>Overall</option>
             <option data-scale="sqrt" value="economic">Economic</option>
             <option data-scale="sqrt" value="education">Education</option>
             <option data-scale="sqrt" value="health">Health</option>
             <option data-scale="sqrt" value="political">Political</option>
+            <option data-scale="" value="">Unset</option>
         </select>
     </li>
     <li>

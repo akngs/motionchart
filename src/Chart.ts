@@ -5,9 +5,11 @@ import {isInRange} from "./Utils"
 
 const CFG = {
   // Main
-  DATA_CIRCLE_OPACITY: 0.8,
+  DATA_CIRCLE_OPACITY: 0.9,
   DATA_CIRCLE_MIN_R: 2,
   DATA_CIRCLE_MAX_R_RATIO: 0.05,
+  DATA_CIRCLE_STROKE: "#000000",
+  DATA_CIRCLE_DEFAULT_FILL: "steelblue",
 
   // Canvas
   CANVAS_STROKE_COLOR: "none",
@@ -318,7 +320,7 @@ export class Chart<D extends IDatum> {
     if (animate) x = x.transition()
     x
       .attr("transform", `translate(0, ${height})`)
-      .call(this.getCustomXAxisRenderer(xAxis, this.x.label, height))
+      .call(this.getCustomXAxisRenderer(xAxis, this.x, height))
 
     // Y axis
     const yAxis = d3.axisLeft<num>(this.y.scale)
@@ -328,7 +330,7 @@ export class Chart<D extends IDatum> {
 
     let y: any = root.select(".axis-y")
     if (animate) y = y.transition()
-    y.call(this.getCustomYAxisRenderer(yAxis, this.y.label, width))
+    y.call(this.getCustomYAxisRenderer(yAxis, this.y, width))
 
     // Boxplots
     let boxPlotX: any = root.select(".boxplot-x")
@@ -340,13 +342,13 @@ export class Chart<D extends IDatum> {
     boxPlotY.attr("transform", `translate(${-CFG.BOXPLOT_SIZE}, 0)`)
   }
 
-  private getCustomXAxisRenderer(original: d3.Axis<num>, label: str, height: num): (g: any) => void {
+  private getCustomXAxisRenderer(original: d3.Axis<num>, dim: Dimension<D>, height: num): (g: any) => void {
     return (g: any) => {
       const isTransition = !!g.selection
       const s = (isTransition ? g.selection() : g) as Selection<D>
 
       // Remove all ticks if the scale is constant
-      if ((original.scale() as any).constant) {
+      if (dim.isConstant()) {
         s.selectAll(".tick").remove()
         return
       }
@@ -373,7 +375,7 @@ export class Chart<D extends IDatum> {
         .attr("text-anchor", "end")
         .attr("dx", -2)
         .attr("dy", -24)
-        .text(label)
+        .text(dim.label)
 
       // Cancel original tweens
       if (isTransition) {
@@ -384,13 +386,13 @@ export class Chart<D extends IDatum> {
     }
   }
 
-  private getCustomYAxisRenderer(original: d3.Axis<num>, label: str, width: num): (g: any) => void {
+  private getCustomYAxisRenderer(original: d3.Axis<num>, dim: Dimension<D>, width: num): (g: any) => void {
     return (g: any) => {
       const isTransition = !!g.selection
       const s = (isTransition ? g.selection() : g) as Selection<D>
 
       // Remove all ticks if the scale is constant
-      if ((original.scale() as any).constant) {
+      if (dim.isConstant()) {
         s.selectAll(".tick").remove()
         return
       }
@@ -417,7 +419,7 @@ export class Chart<D extends IDatum> {
         .attr("text-anchor", "start")
         .attr("dx", 32)
         .attr("dy", -4)
-        .text(label)
+        .text(dim.label)
 
       // Cancel original tweens
       if (isTransition) {
@@ -462,7 +464,7 @@ export class Chart<D extends IDatum> {
         d3.select(this)
           .append("circle")
           .attr("r", 0)
-          .attr("stroke", "#000")
+          .attr("stroke", CFG.DATA_CIRCLE_STROKE)
           .attr("stroke-width", 0.5)
           .style("shape-rendering", "geometricPrecision")
       })
@@ -476,7 +478,7 @@ export class Chart<D extends IDatum> {
       .style("opacity", CFG.DATA_CIRCLE_OPACITY)
       .select("circle")
       .attr("r", (d: D) => this.r.scaled(d))
-      .attr("fill", (d: D) => this.c.scaled(d))
+      .attr("fill", (d: D) => this.c.isConstant() ? CFG.DATA_CIRCLE_DEFAULT_FILL : this.c.scaled(d))
 
     if (this.shouldDrawXBoxPlot())
       this.renderBoxplot(data, this.x, root.select(".boxplot-x"), true, animate)
@@ -603,11 +605,11 @@ export class Chart<D extends IDatum> {
   }
 
   private shouldDrawXBoxPlot(): bool {
-    return !!this.options.xBoxPlot && !this.x.scale.constant
+    return !!this.options.xBoxPlot && !this.x.isConstant()
   }
 
   private shouldDrawYBoxPlot(): bool {
-    return !!this.options.yBoxPlot && !this.y.scale.constant
+    return !!this.options.yBoxPlot && !this.y.isConstant()
   }
 }
 

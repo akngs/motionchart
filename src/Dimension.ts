@@ -2,6 +2,7 @@ import {IDatum} from "./DataTable"
 
 type num = number
 type str = string
+type bool = boolean
 
 export class Dimension<D extends IDatum> {
   public readonly label: str
@@ -22,5 +23,9 @@ export class Dimension<D extends IDatum> {
 
   public scaled(d: D): num | str {
     return this.scale(this.getter(d))
+  }
+
+  public isConstant(): bool {
+    return !!this.scale.constant
   }
 }

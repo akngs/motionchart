@@ -14,6 +14,9 @@ var motionchart = (function (d3) {
       Dimension.prototype.scaled = function (d) {
           return this.scale(this.getter(d));
       };
+      Dimension.prototype.isConstant = function () {
+          return !!this.scale.constant;
+      };
       return Dimension;
   }());
 
@@ -47,9 +50,11 @@ var motionchart = (function (d3) {
 
   var CFG = {
       // Main
-      DATA_CIRCLE_OPACITY: 0.8,
+      DATA_CIRCLE_OPACITY: 0.9,
       DATA_CIRCLE_MIN_R: 2,
       DATA_CIRCLE_MAX_R_RATIO: 0.05,
+      DATA_CIRCLE_STROKE: "#000000",
+      DATA_CIRCLE_DEFAULT_FILL: "steelblue",
       // Canvas
       CANVAS_STROKE_COLOR: "none",
       CANVAS_FILL_COLOR: "none",
@@ -273,7 +278,7 @@ var motionchart = (function (d3) {
               x = x.transition();
           x
               .attr("transform", "translate(0, " + height + ")")
-              .call(this.getCustomXAxisRenderer(xAxis, this.x.label, height));
+              .call(this.getCustomXAxisRenderer(xAxis, this.x, height));
           // Y axis
           var yAxis = d3.axisLeft(this.y.scale)
               .tickFormat(tickFormat)
@@ -282,7 +287,7 @@ var motionchart = (function (d3) {
           var y = root.select(".axis-y");
           if (animate)
               y = y.transition();
-          y.call(this.getCustomYAxisRenderer(yAxis, this.y.label, width));
+          y.call(this.getCustomYAxisRenderer(yAxis, this.y, width));
           // Boxplots
           var boxPlotX = root.select(".boxplot-x");
           if (animate)
@@ -293,12 +298,12 @@ var motionchart = (function (d3) {
               boxPlotY = boxPlotY.transition();
           boxPlotY.attr("transform", "translate(" + -CFG.BOXPLOT_SIZE + ", 0)");
       };
-      Chart.prototype.getCustomXAxisRenderer = function (original, label, height) {
+      Chart.prototype.getCustomXAxisRenderer = function (original, dim, height) {
           return function (g) {
               var isTransition = !!g.selection;
               var s = (isTransition ? g.selection() : g);
               // Remove all ticks if the scale is constant
-              if (original.scale().constant) {
+              if (dim.isConstant()) {
                   s.selectAll(".tick").remove();
                   return;
               }
@@ -322,7 +327,7 @@ var motionchart = (function (d3) {
                   .attr("text-anchor", "end")
                   .attr("dx", -2)
                   .attr("dy", -24)
-                  .text(label);
+                  .text(dim.label);
               // Cancel original tweens
               if (isTransition) {
                   g.selectAll(".tick text")
@@ -331,12 +336,12 @@ var motionchart = (function (d3) {
               }
           };
       };
-      Chart.prototype.getCustomYAxisRenderer = function (original, label, width) {
+      Chart.prototype.getCustomYAxisRenderer = function (original, dim, width) {
           return function (g) {
               var isTransition = !!g.selection;
               var s = (isTransition ? g.selection() : g);
               // Remove all ticks if the scale is constant
-              if (original.scale().constant) {
+              if (dim.isConstant()) {
                   s.selectAll(".tick").remove();
                   return;
               }
@@ -360,7 +365,7 @@ var motionchart = (function (d3) {
                   .attr("text-anchor", "start")
                   .attr("dx", 32)
                   .attr("dy", -4)
-                  .text(label);
+                  .text(dim.label);
               // Cancel original tweens
               if (isTransition) {
                   g.selectAll(".tick text")
@@ -399,7 +404,7 @@ var motionchart = (function (d3) {
               d3.select(this)
                   .append("circle")
                   .attr("r", 0)
-                  .attr("stroke", "#000")
+                  .attr("stroke", CFG.DATA_CIRCLE_STROKE)
                   .attr("stroke-width", 0.5)
                   .style("shape-rendering", "geometricPrecision");
           })
@@ -411,7 +416,7 @@ var motionchart = (function (d3) {
               .style("opacity", CFG.DATA_CIRCLE_OPACITY)
               .select("circle")
               .attr("r", function (d) { return _this.r.scaled(d); })
-              .attr("fill", function (d) { return _this.c.scaled(d); });
+              .attr("fill", function (d) { return _this.c.isConstant() ? CFG.DATA_CIRCLE_DEFAULT_FILL : _this.c.scaled(d); });
           if (this.shouldDrawXBoxPlot())
               this.renderBoxplot(data, this.x, root.select(".boxplot-x"), true, animate);
           if (this.shouldDrawYBoxPlot())
@@ -522,10 +527,10 @@ var motionchart = (function (d3) {
               .attr("opacity", function (d) { return isInRange(dim.raw(d), inside) ? CFG.BOXPLOT_DOT_OPACITY : CFG.BOXPLOT_OUTLIER_OPACITY; });
       };
       Chart.prototype.shouldDrawXBoxPlot = function () {
-          return !!this.options.xBoxPlot && !this.x.scale.constant;
+          return !!this.options.xBoxPlot && !this.x.isConstant();
       };
       Chart.prototype.shouldDrawYBoxPlot = function () {
-          return !!this.options.yBoxPlot && !this.y.scale.constant;
+          return !!this.options.yBoxPlot && !this.y.isConstant();
       };
       return Chart;
   }());
