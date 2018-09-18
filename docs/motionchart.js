@@ -29,6 +29,13 @@ var motionchart = (function (d3) {
   function isInRange(value, range) {
       return range[0] <= value && value <= range[1];
   }
+  function haloEffect(text) {
+      text.select(function () { return this.parentNode.insertBefore(this.cloneNode(true), this); })
+          .attr("fill", "none")
+          .attr("stroke", "white")
+          .attr("stroke-width", 2)
+          .attr("stroke-linejoin", "round");
+  }
   // const formatMillisecond = d3.timeFormat(".%L")
   // const formatSecond = d3.timeFormat(":%S")
   // const formatMinute = d3.timeFormat("%I:%M")
@@ -400,13 +407,31 @@ var motionchart = (function (d3) {
               .attr("class", "datapoint")
               .attr("transform", function (d) { return "translate(" + _this.x.scaled(d) + ", " + _this.y.scaled(d) + ")"; })
               .style("opacity", 0)
-              .each(function () {
+              .each(function (d) {
               d3.select(this)
                   .append("circle")
                   .attr("r", 0)
                   .attr("stroke", CFG.DATA_CIRCLE_STROKE)
                   .attr("stroke-width", 0.5)
                   .style("shape-rendering", "geometricPrecision");
+              d3.select(this)
+                  .append("text")
+                  .attr("font-family", "sans-serif")
+                  .attr("font-size", "11")
+                  .attr("text-anchor", "middle")
+                  .attr("alignment-baseline", "middle")
+                  .attr("opacity", 0.0)
+                  .style("cursor", "default")
+                  .text("" + d[key])
+                  .call(haloEffect);
+          })
+              .on("mouseover", function () {
+              d3.select(this)
+                  .raise()
+                  .selectAll("text").attr("opacity", 1.0);
+          })
+              .on("mouseout", function () {
+              d3.select(this).selectAll("text").attr("opacity", 0.0);
           })
               .merge(dpUpdate);
           if (animate)

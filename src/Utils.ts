@@ -8,6 +8,14 @@ export function isInRange(value: number, range: [number, number]): boolean {
   return range[0] <= value && value <= range[1]
 }
 
+export function haloEffect(text: d3.Selection<any, any, any, any>): void {
+  text.select(function() { return this.parentNode.insertBefore(this.cloneNode(true), this) })
+    .attr("fill", "none")
+    .attr("stroke", "white")
+    .attr("stroke-width", 2)
+    .attr("stroke-linejoin", "round")
+}
+
 // const formatMillisecond = d3.timeFormat(".%L")
 // const formatSecond = d3.timeFormat(":%S")
 // const formatMinute = d3.timeFormat("%I:%M")

@@ -1,7 +1,7 @@
 import * as d3 from "d3"
 import {DataTable, IDatum} from "./DataTable"
 import {Dimension} from "./Dimension"
-import {isInRange} from "./Utils"
+import {haloEffect, isInRange} from "./Utils"
 
 const CFG = {
   // Main
@@ -460,13 +460,31 @@ export class Chart<D extends IDatum> {
         d => `translate(${this.x.scaled(d)}, ${this.y.scaled(d)})`,
       )
       .style("opacity", 0)
-      .each(function() {
+      .each(function (d) {
         d3.select(this)
           .append("circle")
           .attr("r", 0)
           .attr("stroke", CFG.DATA_CIRCLE_STROKE)
           .attr("stroke-width", 0.5)
           .style("shape-rendering", "geometricPrecision")
+        d3.select(this)
+          .append("text")
+          .attr("font-family", "sans-serif")
+          .attr("font-size", "11")
+          .attr("text-anchor", "middle")
+          .attr("alignment-baseline", "middle")
+          .attr("opacity", 0.0)
+          .style("cursor", "default")
+          .text("" + d[key])
+          .call(haloEffect)
+      })
+      .on("mouseover", function () {
+        d3.select(this)
+          .raise()
+          .selectAll("text").attr("opacity", 1.0)
+      })
+      .on("mouseout", function () {
+        d3.select(this).selectAll("text").attr("opacity", 0.0)
       })
       .merge(dpUpdate)
 
@@ -506,7 +524,7 @@ export class Chart<D extends IDatum> {
       const clipId = `boxplot-clip-${isx ? "x" : "y"}`
       root.append("g")
         .attr("class", "plot")
-        .each(function() {
+        .each(function () {
           const thisSel = d3.select(this)
           thisSel.append("clipPath")
             .attr("id", clipId).append("rect")
