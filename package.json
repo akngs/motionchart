@@ -9,6 +9,7 @@
   "module": "lib/motionchart.esm.js",
   "browser": "lib/motionchart.js",
   "unpkg": "lib/motionchart.js",
+  "jsdelivr": "lib/motionchart.js",
   "files": [
     "lib"
   ],

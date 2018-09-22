@@ -5,9 +5,9 @@ import {haloEffect, isInRange} from "./Utils"
 
 const CFG = {
   // Main
-  DATA_CIRCLE_OPACITY: 0.9,
+  DATA_CIRCLE_OPACITY: 0.7,
   DATA_CIRCLE_MIN_R: 2,
-  DATA_CIRCLE_MAX_R_RATIO: 0.05,
+  DATA_CIRCLE_MAX_R_RATIO: 0.03,
   DATA_CIRCLE_STROKE: "#000000",
   DATA_CIRCLE_DEFAULT_FILL: "steelblue",
 
