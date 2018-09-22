@@ -66,14 +66,9 @@ export class DataTable<D extends IDatum> {
   /**
    * Returns [min, max] of specified column
    */
-  public getExtent(key: string, paddingRatio: number = 0.0): [number, number] {
+  public getExtent(key: string): [number, number] {
     if (!this.columnMap.has(key)) throw new Error(`Unknown column name: ${key}`)
-
-    const extent = d3.extent<D, number>(this.data, d => +(d[key] as number))
-    if (paddingRatio === 0.0) return extent as [number, number]
-
-    const pad = ((extent[1] as number) - (extent[0] as number)) * paddingRatio
-    return [(extent[0] as number) - pad, (extent[1] as number) + pad]
+    return d3.extent<D, number>(this.data, d => +(d[key] as number)) as [number, number]
   }
 
   public getTimeExtent(): [number, number] {

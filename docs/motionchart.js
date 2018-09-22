@@ -2,17 +2,34 @@ var motionchart = (function (d3) {
   'use strict';
 
   var Dimension = /** @class */ (function () {
-      function Dimension(label, name, getter, scale) {
+      function Dimension(label, name, getter, scale, options) {
           this.label = label;
           this.name = name;
           this.getter = getter;
           this.scale = scale;
+          this.options = options;
       }
       Dimension.prototype.raw = function (d) {
           return this.getter(d);
       };
       Dimension.prototype.scaled = function (d) {
           return this.scale(this.getter(d));
+      };
+      Dimension.prototype.updateDomain = function (dataTable, reverse) {
+          var min;
+          var max;
+          if (this.options.axisMin !== undefined && this.options.axisMax !== undefined) {
+              min = this.options.axisMin;
+              max = this.options.axisMax;
+          }
+          else {
+              var extent = dataTable.getExtent(this.name);
+              min = this.options.axisMin || extent[0];
+              max = this.options.axisMax || extent[1];
+          }
+          var padding = (max - min) * (this.options.axisPadRatio || 0.05);
+          var domain = [min - padding, max + padding];
+          this.scale.domain(reverse ? domain.reverse() : domain);
       };
       Dimension.prototype.isConstant = function () {
           return !!this.scale.constant;
@@ -183,7 +200,7 @@ var motionchart = (function (d3) {
           if (["constant", "linear", "sqrt", "sequential", "categorical"].indexOf(scaleName) === -1)
               throw new Error("Invalid scale: " + scaleName);
           if (scaleName === "constant")
-              return new Dimension("", "", function (d) { return d[colName]; }, constantScale());
+              return new Dimension("", "", function (d) { return d[colName]; }, constantScale(), {});
           var columnType = this.dataTable.getColumnType(colName);
           options = options || {};
           var validMappings = [
@@ -200,7 +217,7 @@ var motionchart = (function (d3) {
               throw new Error("Incompatible dimension \"" + dimName + "\", scale \"" + scaleName + "\", and type \"" + columnType.type + "\"");
           var scaleFactory = maps[0][3];
           var scale = scaleFactory();
-          return new Dimension(columnType.label, columnType.name, function (d) { return d[colName]; }, scale);
+          return new Dimension(columnType.label, columnType.name, function (d) { return d[colName]; }, scale, options);
       };
       /**
        * Change size of SVG to fill outer element
@@ -219,13 +236,13 @@ var motionchart = (function (d3) {
       Chart.prototype.onDataChange = function () {
           this.t.domain(this.dataTable.getTimeExtent());
           if (this.x.name)
-              this.x.scale.domain(this.dataTable.getExtent(this.x.name, 0.05));
+              this.x.updateDomain(this.dataTable, false);
           if (this.y.name)
-              this.y.scale.domain(this.dataTable.getExtent(this.y.name, 0.05));
+              this.y.updateDomain(this.dataTable, false);
           if (this.r.name)
-              this.r.scale.domain(this.dataTable.getExtent(this.r.name, 0));
+              this.r.updateDomain(this.dataTable, false);
           if (this.c.name)
-              this.c.scale.domain(this.dataTable.getExtent(this.c.name, 0.05).reverse());
+              this.c.updateDomain(this.dataTable, true);
           this.triggerUpdate(true);
       };
       Chart.prototype.onScreenChange = function () {
@@ -632,15 +649,10 @@ var motionchart = (function (d3) {
       /**
        * Returns [min, max] of specified column
        */
-      DataTable.prototype.getExtent = function (key, paddingRatio) {
-          if (paddingRatio === void 0) { paddingRatio = 0.0; }
+      DataTable.prototype.getExtent = function (key) {
           if (!this.columnMap.has(key))
               throw new Error("Unknown column name: " + key);
-          var extent = d3.extent(this.data, function (d) { return +d[key]; });
-          if (paddingRatio === 0.0)
-              return extent;
-          var pad = (extent[1] - extent[0]) * paddingRatio;
-          return [extent[0] - pad, extent[1] + pad];
+          return d3.extent(this.data, function (d) { return +d[key]; });
       };
       DataTable.prototype.getTimeExtent = function () {
           return this.getExtent(this.timeColumn.name);

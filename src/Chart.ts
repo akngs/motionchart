@@ -199,7 +199,7 @@ export class Chart<D extends IDatum> {
     if (["constant", "linear", "sqrt", "sequential", "categorical"].indexOf(scaleName) === -1)
       throw new Error(`Invalid scale: ${scaleName}`)
     if (scaleName === "constant")
-      return new Dimension("", "", d => d[colName] as num, constantScale<D>())
+      return new Dimension("", "", d => d[colName] as num, constantScale<D>(), {})
 
     const columnType = this.dataTable.getColumnType(colName)
     options = options || {}
@@ -219,7 +219,7 @@ export class Chart<D extends IDatum> {
       throw new Error(`Incompatible dimension "${dimName}", scale "${scaleName}", and type "${columnType.type}"`)
     const scaleFactory = maps[0][3] as () => any
     const scale = scaleFactory()
-    return new Dimension(columnType.label, columnType.name, d => d[colName] as num, scale)
+    return new Dimension(columnType.label, columnType.name, d => d[colName] as num, scale, options)
   }
 
   /**
@@ -242,13 +242,13 @@ export class Chart<D extends IDatum> {
     this.t.domain(this.dataTable.getTimeExtent())
 
     if (this.x.name)
-      this.x.scale.domain(this.dataTable.getExtent(this.x.name, 0.05))
+      this.x.updateDomain(this.dataTable, false)
     if (this.y.name)
-      this.y.scale.domain(this.dataTable.getExtent(this.y.name, 0.05))
+      this.y.updateDomain(this.dataTable, false)
     if (this.r.name)
-      this.r.scale.domain(this.dataTable.getExtent(this.r.name, 0))
+      this.r.updateDomain(this.dataTable, false)
     if (this.c.name)
-      this.c.scale.domain(this.dataTable.getExtent(this.c.name, 0.05).reverse())
+      this.c.updateDomain(this.dataTable, true)
 
     this.triggerUpdate(true)
   }
